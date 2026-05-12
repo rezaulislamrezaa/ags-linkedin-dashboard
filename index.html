@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apple Graphic Studio — LinkedIn Lead Dashboard</title>
+    <title>Apple Graphic Studio â€” LinkedIn Lead Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -155,7 +155,7 @@
                 <span class="connection-dot checking" id="connDot"></span>
                 <span id="connText">Checking n8n...</span>
             </span>
-            <button class="btn btn-outline btn-sm" onclick="toggleSettings()">⚙ Settings</button>
+            <button class="btn btn-outline btn-sm" onclick="toggleSettings()">âš™ Settings</button>
             <button class="btn btn-primary" onclick="openAddModal()">+ Add Lead</button>
         </div>
     </div>
@@ -164,7 +164,7 @@
 <main class="main">
 
     <div class="settings-panel" id="settingsPanel">
-        <div class="settings-title">⚙ n8n Connection Settings</div>
+        <div class="settings-title">âš™ n8n Connection Settings</div>
         <div class="settings-grid">
             <div class="form-group">
                 <label class="form-label">n8n Base URL (Cloudflare Tunnel URL)</label>
@@ -205,16 +205,16 @@
     </div>
 
     <div class="tabs">
-        <button class="tab active" onclick="switchTab('leads', this)">📋 Leads</button>
-        <button class="tab" onclick="switchTab('templates', this)">✍ Post Templates</button>
-        <button class="tab" onclick="switchTab('messages', this)">💬 Message Templates</button>
+        <button class="tab active" onclick="switchTab('leads', this)">ðŸ“‹ Leads</button>
+        <button class="tab" onclick="switchTab('templates', this)">âœ Post Templates</button>
+        <button class="tab" onclick="switchTab('messages', this)">ðŸ’¬ Message Templates</button>
     </div>
 
     <!-- LEADS TAB -->
     <div class="tab-content active" id="tab-leads">
         <div class="controls">
             <div class="search-box">
-                <span class="search-icon">🔍</span>
+                <span class="search-icon">ðŸ”</span>
                 <input type="text" id="searchInput" placeholder="Search name, company, position..." oninput="filterLeads()" />
             </div>
             <select id="filterCategory" onchange="filterLeads()">
@@ -233,7 +233,7 @@
                 <option value="Converted">Converted</option>
                 <option value="Rejected">Rejected</option>
             </select>
-            <button class="btn btn-outline btn-sm" onclick="exportCSV()">⬇ Export CSV</button>
+            <button class="btn btn-outline btn-sm" onclick="exportCSV()">â¬‡ Export CSV</button>
         </div>
         <div class="table-container">
             <div class="table-header">
@@ -249,8 +249,8 @@
     <!-- POST TEMPLATES TAB -->
     <div class="tab-content" id="tab-templates">
         <div class="controls" style="justify-content:space-between;">
-            <div style="font-weight:600; font-size:15px;">LinkedIn Post Templates — Copy & Post Daily</div>
-            <button class="btn btn-outline btn-sm" onclick="copyAllTemplates()">⬇ Copy All 5</button>
+            <div style="font-weight:600; font-size:15px;">LinkedIn Post Templates â€” Copy & Post Daily</div>
+            <button class="btn btn-outline btn-sm" onclick="copyAllTemplates()">â¬‡ Copy All 5</button>
         </div>
         <div class="templates-grid" id="templatesGrid"></div>
     </div>
@@ -258,7 +258,7 @@
     <!-- MESSAGE TEMPLATES TAB -->
     <div class="tab-content" id="tab-messages">
         <div class="controls">
-            <div style="font-weight:600; font-size:15px;">Personalized Connection Request Messages — Per Category</div>
+            <div style="font-weight:600; font-size:15px;">Personalized Connection Request Messages â€” Per Category</div>
         </div>
         <div id="messageTemplates"></div>
     </div>
@@ -270,7 +270,7 @@
     <div class="modal">
         <div class="modal-header">
             <span class="modal-title">Add New Lead</span>
-            <span class="modal-close" onclick="closeModal('addModal')">✕</span>
+            <span class="modal-close" onclick="closeModal('addModal')">âœ•</span>
         </div>
         <div class="modal-body">
             <div class="form-row">
@@ -311,7 +311,7 @@
         </div>
         <div class="modal-footer">
             <button class="btn btn-outline" onclick="closeModal('addModal')">Cancel</button>
-            <button class="btn btn-primary" onclick="submitLead()">Add Lead →</button>
+            <button class="btn btn-primary" onclick="submitLead()">Add Lead â†’</button>
         </div>
     </div>
 </div>
@@ -321,7 +321,7 @@
     <div class="modal" style="width:400px">
         <div class="modal-header">
             <span class="modal-title">Update Lead Status</span>
-            <span class="modal-close" onclick="closeModal('updateModal')">✕</span>
+            <span class="modal-close" onclick="closeModal('updateModal')">âœ•</span>
         </div>
         <div class="modal-body">
             <div id="updateLeadName" style="font-weight:600; margin-bottom:16px; color:var(--primary)"></div>
@@ -358,7 +358,7 @@
         </div>
         <div class="modal-footer">
             <button class="btn btn-outline" onclick="closeModal('updateModal')">Cancel</button>
-            <button class="btn btn-success" onclick="submitUpdate()">Update →</button>
+            <button class="btn btn-success" onclick="submitUpdate()">Update â†’</button>
         </div>
     </div>
 </div>
@@ -368,7 +368,7 @@
     <div class="modal" style="width:600px">
         <div class="modal-header">
             <span class="modal-title" id="templateModalTitle">Post Template</span>
-            <span class="modal-close" onclick="closeModal('templateModal')">✕</span>
+            <span class="modal-close" onclick="closeModal('templateModal')">âœ•</span>
         </div>
         <div class="modal-body">
             <textarea class="form-input" id="templateModalContent" style="min-height:300px; font-family:monospace; font-size:13px; line-height:1.6;"></textarea>
@@ -383,11 +383,11 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // CONFIG
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 const CONFIG = {
-    n8nUrl: localStorage.getItem('n8nUrl') || 'http://localhost:5678',
+    n8nUrl: localStorage.getItem('n8nUrl') || 'https://fabric-tourism-border-lady.trycloudflare.com',
     paths: {
         addLead:    '/webhook/ags-add-lead',
         updateLead: '/webhook/ags-update-lead',
@@ -399,9 +399,9 @@ let allLeads = [];
 let filteredLeads = [];
 let currentUpdateUrl = '';
 
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // INIT
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('n8nUrl').value = CONFIG.n8nUrl;
     loadLeads();
@@ -409,9 +409,9 @@ document.addEventListener('DOMContentLoaded', () => {
     renderMessageTemplates();
 });
 
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // CONNECTION CHECK
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 async function checkConnection() {
     const dot  = document.getElementById('connDot');
     const text = document.getElementById('connText');
@@ -423,13 +423,13 @@ async function checkConnection() {
         else throw new Error();
     } catch {
         dot.className = 'connection-dot disconnected';
-        text.textContent = 'n8n Offline — Local Mode';
+        text.textContent = 'n8n Offline â€” Local Mode';
     }
 }
 
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // LOAD LEADS
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 async function loadLeads() {
     document.getElementById('tableBody').innerHTML =
         '<div class="loading"><div class="spinner"></div><div>Loading leads...</div></div>';
@@ -445,8 +445,8 @@ async function loadLeads() {
         const saved = localStorage.getItem('ags_leads');
         allLeads = saved ? JSON.parse(saved) : [];
         showToast(allLeads.length > 0
-            ? 'n8n offline — showing ' + allLeads.length + ' local leads'
-            : 'n8n offline — add leads to start', 'warning');
+            ? 'n8n offline â€” showing ' + allLeads.length + ' local leads'
+            : 'n8n offline â€” add leads to start', 'warning');
     }
     filteredLeads = [...allLeads];
     renderTable();
@@ -454,16 +454,16 @@ async function loadLeads() {
     checkConnection();
 }
 
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // RENDER TABLE
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function renderTable() {
     const container = document.getElementById('tableBody');
     document.getElementById('tableCount').textContent = filteredLeads.length + ' leads';
 
     if (filteredLeads.length === 0) {
         container.innerHTML = `<div class="empty-state">
-            <div class="empty-icon">👥</div>
+            <div class="empty-icon">ðŸ‘¥</div>
             <div class="empty-title">No leads found</div>
             <div>Add your first LinkedIn lead using the button above</div>
         </div>`;
@@ -474,10 +474,10 @@ function renderTable() {
         const name    = esc(l['Name']         || l.name         || 'Unknown');
         const company = esc(l['Company']      || l.company      || '');
         const url     = esc(l['Profile URL']  || l.profileUrl   || '#');
-        const pos     = esc(l['Position']     || l.position     || '—');
-        const cat     = esc(l['Category']     || l.category     || '—');
+        const pos     = esc(l['Position']     || l.position     || 'â€”');
+        const cat     = esc(l['Category']     || l.category     || 'â€”');
         const status  = esc(l['Status']       || l.status       || 'New');
-        const date    = esc(l['Date Added']   || l.dateAdded    || '—');
+        const date    = esc(l['Date Added']   || l.dateAdded    || 'â€”');
         const msgSent = (l['Message Sent']    || l.messageSent) === 'Yes';
         const replied = (l['Reply Received']  || l.replyReceived) === 'Yes';
         return `<tr>
@@ -490,8 +490,8 @@ function renderTable() {
             <td><span class="badge badge-${status.toLowerCase()}">${status}</span></td>
             <td style="font-size:12px;color:var(--subtext)">${date}</td>
             <td>
-                <span style="font-size:12px">${msgSent ? '✅' : '⬜'} Msg</span>
-                <span style="font-size:12px;margin-left:8px">${replied ? '✅' : '⬜'} Reply</span>
+                <span style="font-size:12px">${msgSent ? 'âœ…' : 'â¬œ'} Msg</span>
+                <span style="font-size:12px;margin-left:8px">${replied ? 'âœ…' : 'â¬œ'} Reply</span>
             </td>
             <td>
                 <div class="action-group">
@@ -511,9 +511,9 @@ function renderTable() {
     </table>`;
 }
 
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // STATS
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function updateStats() {
     const s = (l, key) => l['Status'] || l.status || '' === key;
     document.getElementById('statTotal').textContent     = allLeads.length;
@@ -522,9 +522,9 @@ function updateStats() {
     document.getElementById('statConverted').textContent = allLeads.filter(l => (l['Status']||l.status) === 'Converted').length;
 }
 
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // FILTER
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function filterLeads() {
     const q   = document.getElementById('searchInput').value.toLowerCase();
     const cat = document.getElementById('filterCategory').value;
@@ -539,9 +539,9 @@ function filterLeads() {
     renderTable();
 }
 
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // ADD LEAD
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function openAddModal() { document.getElementById('addModal').classList.add('active'); }
 
 async function submitLead() {
@@ -580,9 +580,9 @@ async function submitLead() {
     filteredLeads = [...allLeads]; renderTable(); updateStats();
 }
 
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // UPDATE LEAD
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function openUpdateModal(idx) {
     const l = filteredLeads[idx];
     currentUpdateUrl = l['Profile URL'] || l.profileUrl;
@@ -622,60 +622,60 @@ async function submitUpdate() {
     filteredLeads = [...allLeads]; renderTable(); updateStats();
 }
 
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // POST TEMPLATES
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 const POST_TEMPLATES = [
 {
-    type: 'Value Post — Design Tips',
-    content: `🎨 5 Design Mistakes That Are KILLING Your Brand
+    type: 'Value Post â€” Design Tips',
+    content: `ðŸŽ¨ 5 Design Mistakes That Are KILLING Your Brand
 
 After working with 100+ businesses, these are the most common mistakes I see:
 
-❌ Using 10+ different fonts
-✅ Stick to 2-3 max (one heading, one body)
+âŒ Using 10+ different fonts
+âœ… Stick to 2-3 max (one heading, one body)
 
-❌ Too much text in visuals
-✅ Let the image breathe — white space = sophistication
+âŒ Too much text in visuals
+âœ… Let the image breathe â€” white space = sophistication
 
-❌ Inconsistent color usage
-✅ Define a 3-color brand palette and never deviate
+âŒ Inconsistent color usage
+âœ… Define a 3-color brand palette and never deviate
 
-❌ Low-res logos everywhere
-✅ Always use vector files (.ai, .svg)
+âŒ Low-res logos everywhere
+âœ… Always use vector files (.ai, .svg)
 
-❌ Generic stock photos
-✅ Custom graphics convert 3x better
+âŒ Generic stock photos
+âœ… Custom graphics convert 3x better
 
-📊 Brands with consistent design generate 33% more revenue.
+ðŸ“Š Brands with consistent design generate 33% more revenue.
 
-Are you making any of these mistakes? Drop a comment 👇
+Are you making any of these mistakes? Drop a comment ðŸ‘‡
 
 #GraphicDesign #Branding #MarketingTips #BusinessGrowth`
 },
 {
-    type: 'Social Proof — Case Study',
-    content: `📈 How We Helped a Client Increase Conversions by 47% in 30 Days
+    type: 'Social Proof â€” Case Study',
+    content: `ðŸ“ˆ How We Helped a Client Increase Conversions by 47% in 30 Days
 
 The problem: Their brand looked amateur compared to competitors.
 
 What we delivered:
-✅ Complete logo redesign
-✅ Social media template kit (20 templates)
-✅ Product photography editing
-✅ Ad creatives for Meta & Google
+âœ… Complete logo redesign
+âœ… Social media template kit (20 templates)
+âœ… Product photography editing
+âœ… Ad creatives for Meta & Google
 
 The result: 47% more clicks, 32% more sales in 4 weeks.
 
 If your visuals aren't converting, your brand is leaving money on the table.
 
-DM me "BRAND" and I'll audit your current design for FREE 🎯
+DM me "BRAND" and I'll audit your current design for FREE ðŸŽ¯
 
 #CaseStudy #GraphicDesign #BrandDesign #DigitalMarketing`
 },
 {
-    type: 'Authority — AI + Design',
-    content: `🤖 AI is changing graphic design — but here's what it CAN'T replace:
+    type: 'Authority â€” AI + Design',
+    content: `ðŸ¤– AI is changing graphic design â€” but here's what it CAN'T replace:
 
 I use AI tools daily in my workflow. They're powerful.
 
@@ -686,46 +686,46 @@ AI CANNOT understand your brand story.
 AI CANNOT feel what your customer feels.
 AI CANNOT build emotional connection.
 
-The designers winning in 2025 use AI as a tool — not compete with it.
+The designers winning in 2025 use AI as a tool â€” not compete with it.
 
 At Apple Graphic Studio, we combine:
-→ AI-accelerated production (faster delivery)
-→ Human strategic creativity (better results)
+â†’ AI-accelerated production (faster delivery)
+â†’ Human strategic creativity (better results)
 
 Want to see what that looks like for your business?
 
-Comment "AI" below and I'll send you 3 examples 🚀
+Comment "AI" below and I'll send you 3 examples ðŸš€
 
 #AIDesign #GraphicDesign #Branding #MarketingStrategy`
 },
 {
-    type: 'Direct Offer — Video Editing',
-    content: `🎬 Your Reels are getting ignored. Here's exactly why:
+    type: 'Direct Offer â€” Video Editing',
+    content: `ðŸŽ¬ Your Reels are getting ignored. Here's exactly why:
 
 I've edited 500+ videos. The difference between viral and invisible:
 
-1️⃣ First 3 seconds — no hook = they scroll
-2️⃣ Pacing — too slow they leave, too fast they're confused
-3️⃣ Text on screen — 85% of videos watched WITHOUT sound
+1ï¸âƒ£ First 3 seconds â€” no hook = they scroll
+2ï¸âƒ£ Pacing â€” too slow they leave, too fast they're confused
+3ï¸âƒ£ Text on screen â€” 85% of videos watched WITHOUT sound
 
 Most business owners spend hours filming great content... then kill it with bad editing.
 
 We offer:
-📱 Instagram Reels & TikTok editing
-🎯 YouTube long-form & Shorts
-💼 Corporate explainer videos
-📢 Ad creatives (Meta, Google, YouTube)
+ðŸ“± Instagram Reels & TikTok editing
+ðŸŽ¯ YouTube long-form & Shorts
+ðŸ’¼ Corporate explainer videos
+ðŸ“¢ Ad creatives (Meta, Google, YouTube)
 
 Turnaround: 24-48 hours
 Starting from: $49/video
 
-DM me "VIDEO" and let's chat 🎬
+DM me "VIDEO" and let's chat ðŸŽ¬
 
 #VideoEditing #ContentCreation #SocialMedia #DigitalMarketing`
 },
 {
-    type: 'Engagement — Poll Post',
-    content: `Quick question for business owners 👇
+    type: 'Engagement â€” Poll Post',
+    content: `Quick question for business owners ðŸ‘‡
 
 When it comes to your brand visuals, what's your BIGGEST challenge?
 
@@ -737,7 +737,7 @@ D) I've been burned by bad designers before
 Drop your answer in the comments.
 (I personally reply to every single one with specific advice)
 
-P.S. — If you voted B, I have a surprise for you in my next post 👀
+P.S. â€” If you voted B, I have a surprise for you in my next post ðŸ‘€
 
 #Business #Branding #SmallBusiness #Entrepreneur`
 }
@@ -767,20 +767,20 @@ function copyAllTemplates() {
     navigator.clipboard.writeText(all).then(() => showToast('All 5 templates copied!', 'success'));
 }
 
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // MESSAGE TEMPLATES
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 const MSG_TEMPLATES = [
 {
     category: 'E-Commerce',
     label: 'E-Commerce Owner',
     message: `Hi [First Name],
 
-I noticed you're running an e-commerce brand — your product lineup looks impressive!
+I noticed you're running an e-commerce brand â€” your product lineup looks impressive!
 
 I help e-commerce businesses create scroll-stopping product visuals, ad creatives, and social content that actually convert.
 
-Would love to connect and share some ideas that have worked for similar brands 🚀
+Would love to connect and share some ideas that have worked for similar brands ðŸš€
 
 Best,
 [Your Name] | Apple Graphic Studio
@@ -791,9 +791,9 @@ applegraphicstudio.com`
     label: 'Marketing Agency',
     message: `Hi [First Name],
 
-Great to come across your agency's work — the campaigns you've shared are really compelling.
+Great to come across your agency's work â€” the campaigns you've shared are really compelling.
 
-We work as a white-label design partner for several agencies — handling all graphic/video production so your team can focus on strategy.
+We work as a white-label design partner for several agencies â€” handling all graphic/video production so your team can focus on strategy.
 
 Fast turnaround, agency pricing, no drama. Would love to explore if there's a fit.
 
@@ -806,7 +806,7 @@ Open to a quick 15-min call this week?
     label: 'YouTuber / Creator',
     message: `Hey [First Name]!
 
-Been following your channel — your content quality is great!
+Been following your channel â€” your content quality is great!
 
 I help YouTubers with thumbnails, channel art, and video editing that boosts CTR. One of our creators went from 4% to 11% CTR just by upgrading their thumbnails.
 
@@ -858,9 +858,9 @@ function copyMessage(leadIdx) {
         showToast('Personalized message copied for ' + firstName + '!', 'success'));
 }
 
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // EXPORT CSV
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function exportCSV() {
     if (!allLeads.length) { showToast('No leads to export', 'warning'); return; }
     const cols = ['Name','Profile URL','Company','Position','Category','Status','Date Added','Message Sent','Reply Received','Notes'];
@@ -875,9 +875,9 @@ function exportCSV() {
     showToast('CSV exported!', 'success');
 }
 
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // SETTINGS
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function toggleSettings() { document.getElementById('settingsPanel').classList.toggle('active'); }
 function saveSettings() {
     CONFIG.n8nUrl = document.getElementById('n8nUrl').value.trim().replace(/\/$/, '');
@@ -886,9 +886,9 @@ function saveSettings() {
     toggleSettings(); loadLeads();
 }
 
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // TABS & UTILITIES
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function switchTab(id, btn) {
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
@@ -914,3 +914,4 @@ document.querySelectorAll('.modal-overlay').forEach(o =>
 </script>
 </body>
 </html>
+
