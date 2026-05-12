@@ -1,0 +1,203 @@
+{
+  "name": "Apple Graphic Studio — LinkedIn Lead Manager",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ags-add-lead",
+        "responseMode": "responseNode",
+        "options": { "allowedOrigins": "*" }
+      },
+      "id": "wh-add-lead",
+      "name": "Webhook — Add Lead",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "ags-add-lead"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "1",  "name": "Name",           "value": "={{ $json.body.name }}",       "type": "string" },
+            { "id": "2",  "name": "Profile URL",    "value": "={{ $json.body.profileUrl }}", "type": "string" },
+            { "id": "3",  "name": "Company",        "value": "={{ $json.body.company }}",    "type": "string" },
+            { "id": "4",  "name": "Position",       "value": "={{ $json.body.position }}",   "type": "string" },
+            { "id": "5",  "name": "Category",       "value": "={{ $json.body.category }}",   "type": "string" },
+            { "id": "6",  "name": "Status",         "value": "New",                          "type": "string" },
+            { "id": "7",  "name": "Date Added",     "value": "={{ $now.format('YYYY-MM-DD HH:mm') }}", "type": "string" },
+            { "id": "8",  "name": "Message Sent",   "value": "No",                           "type": "string" },
+            { "id": "9",  "name": "Reply Received", "value": "No",                           "type": "string" },
+            { "id": "10", "name": "Notes",          "value": "={{ $json.body.notes || '' }}", "type": "string" }
+          ]
+        }
+      },
+      "id": "set-lead-data",
+      "name": "Format Lead Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": { "__rl": true, "value": "PASTE_YOUR_GOOGLE_SHEET_ID_HERE", "mode": "id" },
+        "sheetName":  { "__rl": true, "value": "Leads", "mode": "name" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name":           "={{ $json.Name }}",
+            "Profile URL":    "={{ $json['Profile URL'] }}",
+            "Company":        "={{ $json.Company }}",
+            "Position":       "={{ $json.Position }}",
+            "Category":       "={{ $json.Category }}",
+            "Status":         "={{ $json.Status }}",
+            "Date Added":     "={{ $json['Date Added'] }}",
+            "Message Sent":   "={{ $json['Message Sent'] }}",
+            "Reply Received": "={{ $json['Reply Received'] }}",
+            "Notes":          "={{ $json.Notes }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "gsheets-append",
+      "name": "Google Sheets — Append Row",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [680, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Google Sheets OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"success\": true, \"message\": \"Lead added\", \"timestamp\": \"{{ $now.format('YYYY-MM-DD HH:mm:ss') }}\" }"
+      },
+      "id": "respond-add",
+      "name": "Respond — Add Lead",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [900, 300]
+    },
+
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ags-update-lead",
+        "responseMode": "responseNode",
+        "options": { "allowedOrigins": "*" }
+      },
+      "id": "wh-update-lead",
+      "name": "Webhook — Update Lead",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 520],
+      "webhookId": "ags-update-lead"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": { "__rl": true, "value": "PASTE_YOUR_GOOGLE_SHEET_ID_HERE", "mode": "id" },
+        "sheetName":  { "__rl": true, "value": "Leads", "mode": "name" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status":         "={{ $json.body.status }}",
+            "Message Sent":   "={{ $json.body.messageSent }}",
+            "Reply Received": "={{ $json.body.replyReceived }}",
+            "Notes":          "={{ $json.body.notes }}"
+          },
+          "matchingColumns": ["Profile URL"],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "gsheets-update",
+      "name": "Google Sheets — Update Row",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [460, 520],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Google Sheets OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"success\": true, \"message\": \"Lead updated\" }"
+      },
+      "id": "respond-update",
+      "name": "Respond — Update Lead",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [680, 520]
+    },
+
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "ags-get-leads",
+        "responseMode": "responseNode",
+        "options": { "allowedOrigins": "*" }
+      },
+      "id": "wh-get-leads",
+      "name": "Webhook — Get Leads",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 740],
+      "webhookId": "ags-get-leads"
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": { "__rl": true, "value": "PASTE_YOUR_GOOGLE_SHEET_ID_HERE", "mode": "id" },
+        "sheetName":  { "__rl": true, "value": "Leads", "mode": "name" },
+        "options": {}
+      },
+      "id": "gsheets-read",
+      "name": "Google Sheets — Read All",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [460, 740],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Google Sheets OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, data: $input.all().map(i => i.json) }) }}"
+      },
+      "id": "respond-get",
+      "name": "Respond — Get Leads",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [680, 740]
+    }
+  ],
+
+  "connections": {
+    "Webhook — Add Lead":    { "main": [[{ "node": "Format Lead Data",           "type": "main", "index": 0 }]] },
+    "Format Lead Data":      { "main": [[{ "node": "Google Sheets — Append Row", "type": "main", "index": 0 }]] },
+    "Google Sheets — Append Row": { "main": [[{ "node": "Respond — Add Lead",   "type": "main", "index": 0 }]] },
+    "Webhook — Update Lead": { "main": [[{ "node": "Google Sheets — Update Row","type": "main", "index": 0 }]] },
+    "Google Sheets — Update Row": { "main": [[{ "node": "Respond — Update Lead","type": "main", "index": 0 }]] },
+    "Webhook — Get Leads":   { "main": [[{ "node": "Google Sheets — Read All",  "type": "main", "index": 0 }]] },
+    "Google Sheets — Read All":   { "main": [[{ "node": "Respond — Get Leads",  "type": "main", "index": 0 }]] }
+  },
+
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "tags": [{ "name": "Apple Graphic Studio" }]
+}

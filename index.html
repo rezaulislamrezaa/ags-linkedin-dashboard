@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple Graphic Studio — LinkedIn Lead Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f0f2f5;
+            --card: #ffffff;
+            --primary: #0a66c2;
+            --primary-dark: #004182;
+            --success: #057642;
+            --warning: #e68523;
+            --danger: #b24020;
+            --text: #191919;
+            --subtext: #666666;
+            --border: #e0e0e0;
+            --shadow: 0 1px 3px rgba(0,0,0,0.12);
+            --radius: 8px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+        .header { background: var(--card); border-bottom: 1px solid var(--border); padding: 0 24px; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow); }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { width: 36px; height: 36px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 16px; }
+        .logo-text { font-weight: 700; font-size: 16px; }
+        .logo-sub { font-size: 11px; color: var(--subtext); }
+        .header-actions { display: flex; gap: 12px; align-items: center; }
+
+        .btn { padding: 8px 16px; border-radius: 20px; border: none; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-outline { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); }
+        .btn-outline:hover { background: rgba(10,102,194,0.05); }
+        .btn-sm { padding: 5px 12px; font-size: 12px; }
+        .btn-success { background: var(--success); color: white; }
+
+        .main { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+        .stat-card { background: var(--card); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+        .stat-label { font-size: 12px; color: var(--subtext); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .stat-value { font-size: 32px; font-weight: 800; line-height: 1; }
+        .stat-change { font-size: 12px; color: var(--subtext); margin-top: 6px; }
+
+        .controls { background: var(--card); border-radius: var(--radius); padding: 16px 20px; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+        .search-box { flex: 1; min-width: 200px; position: relative; }
+        .search-box input { width: 100%; padding: 8px 16px 8px 36px; border: 1.5px solid var(--border); border-radius: 20px; font-family: 'Inter', sans-serif; font-size: 14px; outline: none; transition: border 0.2s; }
+        .search-box input:focus { border-color: var(--primary); }
+        .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--subtext); font-size: 14px; }
+        select { padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 20px; font-family: 'Inter', sans-serif; font-size: 14px; outline: none; cursor: pointer; background: white; }
+        select:focus { border-color: var(--primary); }
+
+        .table-container { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); overflow: hidden; }
+        .table-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .table-title { font-weight: 600; font-size: 15px; }
+        .table-count { font-size: 13px; color: var(--subtext); }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px 16px; font-size: 12px; font-weight: 600; color: var(--subtext); text-transform: uppercase; letter-spacing: 0.5px; background: #f8f9fa; border-bottom: 1px solid var(--border); }
+        td { padding: 12px 16px; border-bottom: 1px solid #f0f0f0; font-size: 14px; vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #f8f9fb; }
+        .lead-name { font-weight: 600; color: var(--primary); cursor: pointer; }
+        .lead-name:hover { text-decoration: underline; }
+        .lead-company { font-size: 12px; color: var(--subtext); margin-top: 2px; }
+
+        .badge { padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; display: inline-block; }
+        .badge-new { background: #e8f0fe; color: #1967d2; }
+        .badge-contacted { background: #fff3e0; color: #e65100; }
+        .badge-replied { background: #e8f5e9; color: #1b5e20; }
+        .badge-converted { background: #f3e5f5; color: #4a148c; }
+        .badge-rejected { background: #fce4ec; color: #880e4f; }
+        .cat-badge { padding: 2px 8px; border-radius: 10px; font-size: 11px; background: #f0f2f5; color: var(--subtext); font-weight: 500; }
+        .action-group { display: flex; gap: 6px; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: var(--card); border-radius: 12px; width: 520px; max-width: 95vw; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .modal-header { padding: 20px 24px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-title { font-size: 18px; font-weight: 700; }
+        .modal-close { cursor: pointer; color: var(--subtext); font-size: 20px; padding: 4px; }
+        .modal-close:hover { color: var(--text); }
+        .modal-body { padding: 20px 24px; }
+        .modal-footer { padding: 16px 24px 20px; border-top: 1px solid var(--border); display: flex; gap: 12px; justify-content: flex-end; }
+
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+        .form-input { width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--radius); font-family: 'Inter', sans-serif; font-size: 14px; outline: none; transition: border 0.2s; }
+        .form-input:focus { border-color: var(--primary); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        textarea.form-input { resize: vertical; min-height: 80px; }
+
+        .settings-panel { background: var(--card); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 16px; display: none; }
+        .settings-panel.active { display: block; }
+        .settings-title { font-weight: 600; font-size: 14px; margin-bottom: 16px; }
+        .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+
+        .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+        .toast { background: var(--text); color: white; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,0.2); animation: slideIn 0.3s ease; max-width: 320px; }
+        .toast.success { background: var(--success); }
+        .toast.error { background: #c0392b; }
+        .toast.warning { background: var(--warning); }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        .connection-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+        .connection-dot.connected { background: var(--success); }
+        .connection-dot.disconnected { background: var(--danger); }
+        .connection-dot.checking { background: var(--warning); animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--subtext); }
+        .empty-icon { font-size: 48px; margin-bottom: 16px; }
+        .empty-title { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+        .loading { text-align: center; padding: 40px; color: var(--subtext); }
+        .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .templates-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px; }
+        .template-card { background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 16px; cursor: pointer; transition: all 0.2s; }
+        .template-card:hover { border-color: var(--primary); box-shadow: 0 2px 8px rgba(10,102,194,0.15); }
+        .template-type { font-size: 11px; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .template-preview { font-size: 13px; color: var(--text); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+        .tabs { display: flex; gap: 0; margin-bottom: 20px; background: var(--card); border-radius: var(--radius); padding: 4px; border: 1px solid var(--border); box-shadow: var(--shadow); width: fit-content; }
+        .tab { padding: 8px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--subtext); transition: all 0.2s; border: none; background: transparent; font-family: 'Inter', sans-serif; }
+        .tab.active { background: var(--primary); color: white; font-weight: 600; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .form-row { grid-template-columns: 1fr; }
+            .settings-grid { grid-template-columns: 1fr; }
+            .templates-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <div class="logo">
+            <div class="logo-icon">AG</div>
+            <div>
+                <div class="logo-text">Apple Graphic Studio</div>
+                <div class="logo-sub">LinkedIn Lead Dashboard</div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <span style="font-size:13px; color:var(--subtext);">
+                <span class="connection-dot checking" id="connDot"></span>
+                <span id="connText">Checking n8n...</span>
+            </span>
+            <button class="btn btn-outline btn-sm" onclick="toggleSettings()">⚙ Settings</button>
+            <button class="btn btn-primary" onclick="openAddModal()">+ Add Lead</button>
+        </div>
+    </div>
+</header>
+
+<main class="main">
+
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-title">⚙ n8n Connection Settings</div>
+        <div class="settings-grid">
+            <div class="form-group">
+                <label class="form-label">n8n Base URL (Cloudflare Tunnel URL)</label>
+                <input class="form-input" id="n8nUrl" placeholder="https://xxx.trycloudflare.com" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Note</label>
+                <input class="form-input" value="Run: cloudflared tunnel --url http://localhost:5678" readonly style="background:#f8f9fa; font-size:12px;" />
+            </div>
+        </div>
+        <div style="display:flex; gap:10px;">
+            <button class="btn btn-primary btn-sm" onclick="saveSettings()">Save & Connect</button>
+            <button class="btn btn-outline btn-sm" onclick="loadLeads()">Refresh Data</button>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">Total Leads</div>
+            <div class="stat-value" style="color:var(--primary)" id="statTotal">0</div>
+            <div class="stat-change">All time</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Contacted</div>
+            <div class="stat-value" style="color:var(--warning)" id="statContacted">0</div>
+            <div class="stat-change">Message sent</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Replied</div>
+            <div class="stat-value" style="color:var(--success)" id="statReplied">0</div>
+            <div class="stat-change">Responded</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Converted</div>
+            <div class="stat-value" style="color:#7c3aed" id="statConverted">0</div>
+            <div class="stat-change">Became clients</div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('leads', this)">📋 Leads</button>
+        <button class="tab" onclick="switchTab('templates', this)">✍ Post Templates</button>
+        <button class="tab" onclick="switchTab('messages', this)">💬 Message Templates</button>
+    </div>
+
+    <!-- LEADS TAB -->
+    <div class="tab-content active" id="tab-leads">
+        <div class="controls">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Search name, company, position..." oninput="filterLeads()" />
+            </div>
+            <select id="filterCategory" onchange="filterLeads()">
+                <option value="">All Categories</option>
+                <option value="E-Commerce">E-Commerce Owner</option>
+                <option value="Marketing Agency">Marketing Agency</option>
+                <option value="YouTuber">YouTuber / Creator</option>
+                <option value="Real Estate">Real Estate</option>
+                <option value="Other">Other</option>
+            </select>
+            <select id="filterStatus" onchange="filterLeads()">
+                <option value="">All Status</option>
+                <option value="New">New</option>
+                <option value="Contacted">Contacted</option>
+                <option value="Replied">Replied</option>
+                <option value="Converted">Converted</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+            <button class="btn btn-outline btn-sm" onclick="exportCSV()">⬇ Export CSV</button>
+        </div>
+        <div class="table-container">
+            <div class="table-header">
+                <span class="table-title">Lead Database</span>
+                <span class="table-count" id="tableCount">0 leads</span>
+            </div>
+            <div id="tableBody">
+                <div class="loading"><div class="spinner"></div><div>Loading leads...</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- POST TEMPLATES TAB -->
+    <div class="tab-content" id="tab-templates">
+        <div class="controls" style="justify-content:space-between;">
+            <div style="font-weight:600; font-size:15px;">LinkedIn Post Templates — Copy & Post Daily</div>
+            <button class="btn btn-outline btn-sm" onclick="copyAllTemplates()">⬇ Copy All 5</button>
+        </div>
+        <div class="templates-grid" id="templatesGrid"></div>
+    </div>
+
+    <!-- MESSAGE TEMPLATES TAB -->
+    <div class="tab-content" id="tab-messages">
+        <div class="controls">
+            <div style="font-weight:600; font-size:15px;">Personalized Connection Request Messages — Per Category</div>
+        </div>
+        <div id="messageTemplates"></div>
+    </div>
+
+</main>
+
+<!-- ADD LEAD MODAL -->
+<div class="modal-overlay" id="addModal">
+    <div class="modal">
+        <div class="modal-header">
+            <span class="modal-title">Add New Lead</span>
+            <span class="modal-close" onclick="closeModal('addModal')">✕</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Full Name *</label>
+                    <input class="form-input" id="f-name" placeholder="John Smith" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Company</label>
+                    <input class="form-input" id="f-company" placeholder="Company Name" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">LinkedIn Profile URL *</label>
+                <input class="form-input" id="f-profileUrl" placeholder="https://linkedin.com/in/username" />
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Position / Title</label>
+                    <input class="form-input" id="f-position" placeholder="Marketing Manager" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category *</label>
+                    <select class="form-input" id="f-category">
+                        <option value="">Select...</option>
+                        <option value="E-Commerce">E-Commerce Owner</option>
+                        <option value="Marketing Agency">Marketing Agency</option>
+                        <option value="YouTuber">YouTuber / Creator</option>
+                        <option value="Real Estate">Real Estate</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Notes</label>
+                <textarea class="form-input" id="f-notes" placeholder="Why they're a good fit, how you found them..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('addModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitLead()">Add Lead →</button>
+        </div>
+    </div>
+</div>
+
+<!-- UPDATE STATUS MODAL -->
+<div class="modal-overlay" id="updateModal">
+    <div class="modal" style="width:400px">
+        <div class="modal-header">
+            <span class="modal-title">Update Lead Status</span>
+            <span class="modal-close" onclick="closeModal('updateModal')">✕</span>
+        </div>
+        <div class="modal-body">
+            <div id="updateLeadName" style="font-weight:600; margin-bottom:16px; color:var(--primary)"></div>
+            <div class="form-group">
+                <label class="form-label">Status</label>
+                <select class="form-input" id="u-status">
+                    <option value="New">New</option>
+                    <option value="Contacted">Contacted</option>
+                    <option value="Replied">Replied</option>
+                    <option value="Converted">Converted</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Message Sent?</label>
+                    <select class="form-input" id="u-messageSent">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Reply Received?</label>
+                    <select class="form-input" id="u-replyReceived">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Notes</label>
+                <textarea class="form-input" id="u-notes" placeholder="Update notes..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('updateModal')">Cancel</button>
+            <button class="btn btn-success" onclick="submitUpdate()">Update →</button>
+        </div>
+    </div>
+</div>
+
+<!-- TEMPLATE COPY MODAL -->
+<div class="modal-overlay" id="templateModal">
+    <div class="modal" style="width:600px">
+        <div class="modal-header">
+            <span class="modal-title" id="templateModalTitle">Post Template</span>
+            <span class="modal-close" onclick="closeModal('templateModal')">✕</span>
+        </div>
+        <div class="modal-body">
+            <textarea class="form-input" id="templateModalContent" style="min-height:300px; font-family:monospace; font-size:13px; line-height:1.6;"></textarea>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('templateModal')">Close</button>
+            <button class="btn btn-primary" onclick="copyTemplate()">Copy to Clipboard</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ═══════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════
+const CONFIG = {
+    n8nUrl: localStorage.getItem('n8nUrl') || 'http://localhost:5678',
+    paths: {
+        addLead:    '/webhook/ags-add-lead',
+        updateLead: '/webhook/ags-update-lead',
+        getLeads:   '/webhook/ags-get-leads'
+    }
+};
+
+let allLeads = [];
+let filteredLeads = [];
+let currentUpdateUrl = '';
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('n8nUrl').value = CONFIG.n8nUrl;
+    loadLeads();
+    renderTemplates();
+    renderMessageTemplates();
+});
+
+// ═══════════════════════════════════════════
+// CONNECTION CHECK
+// ═══════════════════════════════════════════
+async function checkConnection() {
+    const dot  = document.getElementById('connDot');
+    const text = document.getElementById('connText');
+    dot.className = 'connection-dot checking';
+    text.textContent = 'Checking n8n...';
+    try {
+        const res = await fetch(CONFIG.n8nUrl + CONFIG.paths.getLeads, { signal: AbortSignal.timeout(5000) });
+        if (res.ok) { dot.className = 'connection-dot connected'; text.textContent = 'n8n Connected'; }
+        else throw new Error();
+    } catch {
+        dot.className = 'connection-dot disconnected';
+        text.textContent = 'n8n Offline — Local Mode';
+    }
+}
+
+// ═══════════════════════════════════════════
+// LOAD LEADS
+// ═══════════════════════════════════════════
+async function loadLeads() {
+    document.getElementById('tableBody').innerHTML =
+        '<div class="loading"><div class="spinner"></div><div>Loading leads...</div></div>';
+    try {
+        const res = await fetch(CONFIG.n8nUrl + CONFIG.paths.getLeads, { signal: AbortSignal.timeout(8000) });
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        if (data.success && Array.isArray(data.data)) {
+            allLeads = data.data;
+            showToast('Loaded ' + allLeads.length + ' leads from Google Sheets', 'success');
+        } else throw new Error();
+    } catch {
+        const saved = localStorage.getItem('ags_leads');
+        allLeads = saved ? JSON.parse(saved) : [];
+        showToast(allLeads.length > 0
+            ? 'n8n offline — showing ' + allLeads.length + ' local leads'
+            : 'n8n offline — add leads to start', 'warning');
+    }
+    filteredLeads = [...allLeads];
+    renderTable();
+    updateStats();
+    checkConnection();
+}
+
+// ═══════════════════════════════════════════
+// RENDER TABLE
+// ═══════════════════════════════════════════
+function renderTable() {
+    const container = document.getElementById('tableBody');
+    document.getElementById('tableCount').textContent = filteredLeads.length + ' leads';
+
+    if (filteredLeads.length === 0) {
+        container.innerHTML = `<div class="empty-state">
+            <div class="empty-icon">👥</div>
+            <div class="empty-title">No leads found</div>
+            <div>Add your first LinkedIn lead using the button above</div>
+        </div>`;
+        return;
+    }
+
+    const rows = filteredLeads.map((l, i) => {
+        const name    = esc(l['Name']         || l.name         || 'Unknown');
+        const company = esc(l['Company']      || l.company      || '');
+        const url     = esc(l['Profile URL']  || l.profileUrl   || '#');
+        const pos     = esc(l['Position']     || l.position     || '—');
+        const cat     = esc(l['Category']     || l.category     || '—');
+        const status  = esc(l['Status']       || l.status       || 'New');
+        const date    = esc(l['Date Added']   || l.dateAdded    || '—');
+        const msgSent = (l['Message Sent']    || l.messageSent) === 'Yes';
+        const replied = (l['Reply Received']  || l.replyReceived) === 'Yes';
+        return `<tr>
+            <td>
+                <div class="lead-name" onclick="window.open('${url}','_blank')">${name}</div>
+                <div class="lead-company">${company}</div>
+            </td>
+            <td style="font-size:13px;color:var(--subtext);max-width:180px">${pos}</td>
+            <td><span class="cat-badge">${cat}</span></td>
+            <td><span class="badge badge-${status.toLowerCase()}">${status}</span></td>
+            <td style="font-size:12px;color:var(--subtext)">${date}</td>
+            <td>
+                <span style="font-size:12px">${msgSent ? '✅' : '⬜'} Msg</span>
+                <span style="font-size:12px;margin-left:8px">${replied ? '✅' : '⬜'} Reply</span>
+            </td>
+            <td>
+                <div class="action-group">
+                    <button class="btn btn-sm btn-outline" onclick="openUpdateModal(${i})">Update</button>
+                    <button class="btn btn-sm btn-outline" onclick="copyMessage(${i})">Msg</button>
+                </div>
+            </td>
+        </tr>`;
+    }).join('');
+
+    container.innerHTML = `<table>
+        <thead><tr>
+            <th>Name / Company</th><th>Position</th><th>Category</th>
+            <th>Status</th><th>Date Added</th><th>Activity</th><th>Actions</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+    </table>`;
+}
+
+// ═══════════════════════════════════════════
+// STATS
+// ═══════════════════════════════════════════
+function updateStats() {
+    const s = (l, key) => l['Status'] || l.status || '' === key;
+    document.getElementById('statTotal').textContent     = allLeads.length;
+    document.getElementById('statContacted').textContent = allLeads.filter(l => (l['Status']||l.status) === 'Contacted').length;
+    document.getElementById('statReplied').textContent   = allLeads.filter(l => (l['Status']||l.status) === 'Replied').length;
+    document.getElementById('statConverted').textContent = allLeads.filter(l => (l['Status']||l.status) === 'Converted').length;
+}
+
+// ═══════════════════════════════════════════
+// FILTER
+// ═══════════════════════════════════════════
+function filterLeads() {
+    const q   = document.getElementById('searchInput').value.toLowerCase();
+    const cat = document.getElementById('filterCategory').value;
+    const st  = document.getElementById('filterStatus').value;
+    filteredLeads = allLeads.filter(l => {
+        const matchQ  = !q  || [l['Name'],l.name,l['Company'],l.company,l['Position'],l.position]
+                                .some(v => (v||'').toLowerCase().includes(q));
+        const matchC  = !cat || (l['Category']||l.category||'') === cat;
+        const matchS  = !st  || (l['Status']||l.status||'')     === st;
+        return matchQ && matchC && matchS;
+    });
+    renderTable();
+}
+
+// ═══════════════════════════════════════════
+// ADD LEAD
+// ═══════════════════════════════════════════
+function openAddModal() { document.getElementById('addModal').classList.add('active'); }
+
+async function submitLead() {
+    const name       = document.getElementById('f-name').value.trim();
+    const profileUrl = document.getElementById('f-profileUrl').value.trim();
+    const category   = document.getElementById('f-category').value;
+    if (!name || !profileUrl || !category) {
+        showToast('Name, Profile URL and Category are required', 'error'); return;
+    }
+    const lead = {
+        name, profileUrl,
+        company:  document.getElementById('f-company').value.trim(),
+        position: document.getElementById('f-position').value.trim(),
+        category,
+        notes:    document.getElementById('f-notes').value.trim()
+    };
+    try {
+        const res = await fetch(CONFIG.n8nUrl + CONFIG.paths.addLead, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(lead), signal: AbortSignal.timeout(8000)
+        });
+        if (!res.ok) throw new Error();
+        showToast('Lead saved to Google Sheets!', 'success');
+    } catch {
+        const row = { 'Name': lead.name, 'Profile URL': lead.profileUrl, 'Company': lead.company,
+            'Position': lead.position, 'Category': lead.category, 'Status': 'New',
+            'Date Added': new Date().toISOString().slice(0,16).replace('T',' '),
+            'Message Sent': 'No', 'Reply Received': 'No', 'Notes': lead.notes };
+        allLeads.unshift(row);
+        localStorage.setItem('ags_leads', JSON.stringify(allLeads));
+        showToast('Saved locally (n8n offline)', 'warning');
+    }
+    closeModal('addModal');
+    ['f-name','f-company','f-profileUrl','f-position','f-notes'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('f-category').value = '';
+    filteredLeads = [...allLeads]; renderTable(); updateStats();
+}
+
+// ═══════════════════════════════════════════
+// UPDATE LEAD
+// ═══════════════════════════════════════════
+function openUpdateModal(idx) {
+    const l = filteredLeads[idx];
+    currentUpdateUrl = l['Profile URL'] || l.profileUrl;
+    document.getElementById('updateLeadName').textContent = l['Name'] || l.name;
+    document.getElementById('u-status').value        = l['Status']        || l.status        || 'New';
+    document.getElementById('u-messageSent').value   = l['Message Sent']  || l.messageSent   || 'No';
+    document.getElementById('u-replyReceived').value = l['Reply Received']|| l.replyReceived || 'No';
+    document.getElementById('u-notes').value         = l['Notes']         || l.notes         || '';
+    document.getElementById('updateModal').classList.add('active');
+}
+
+async function submitUpdate() {
+    const payload = {
+        profileUrl:     currentUpdateUrl,
+        status:         document.getElementById('u-status').value,
+        messageSent:    document.getElementById('u-messageSent').value,
+        replyReceived:  document.getElementById('u-replyReceived').value,
+        notes:          document.getElementById('u-notes').value
+    };
+    try {
+        const res = await fetch(CONFIG.n8nUrl + CONFIG.paths.updateLead, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload), signal: AbortSignal.timeout(8000)
+        });
+        if (!res.ok) throw new Error();
+        showToast('Lead updated in Google Sheets!', 'success');
+    } catch {
+        const lead = allLeads.find(l => (l['Profile URL']||l.profileUrl) === currentUpdateUrl);
+        if (lead) {
+            lead['Status'] = payload.status; lead['Message Sent'] = payload.messageSent;
+            lead['Reply Received'] = payload.replyReceived; lead['Notes'] = payload.notes;
+        }
+        localStorage.setItem('ags_leads', JSON.stringify(allLeads));
+        showToast('Updated locally (n8n offline)', 'warning');
+    }
+    closeModal('updateModal');
+    filteredLeads = [...allLeads]; renderTable(); updateStats();
+}
+
+// ═══════════════════════════════════════════
+// POST TEMPLATES
+// ═══════════════════════════════════════════
+const POST_TEMPLATES = [
+{
+    type: 'Value Post — Design Tips',
+    content: `🎨 5 Design Mistakes That Are KILLING Your Brand
+
+After working with 100+ businesses, these are the most common mistakes I see:
+
+❌ Using 10+ different fonts
+✅ Stick to 2-3 max (one heading, one body)
+
+❌ Too much text in visuals
+✅ Let the image breathe — white space = sophistication
+
+❌ Inconsistent color usage
+✅ Define a 3-color brand palette and never deviate
+
+❌ Low-res logos everywhere
+✅ Always use vector files (.ai, .svg)
+
+❌ Generic stock photos
+✅ Custom graphics convert 3x better
+
+📊 Brands with consistent design generate 33% more revenue.
+
+Are you making any of these mistakes? Drop a comment 👇
+
+#GraphicDesign #Branding #MarketingTips #BusinessGrowth`
+},
+{
+    type: 'Social Proof — Case Study',
+    content: `📈 How We Helped a Client Increase Conversions by 47% in 30 Days
+
+The problem: Their brand looked amateur compared to competitors.
+
+What we delivered:
+✅ Complete logo redesign
+✅ Social media template kit (20 templates)
+✅ Product photography editing
+✅ Ad creatives for Meta & Google
+
+The result: 47% more clicks, 32% more sales in 4 weeks.
+
+If your visuals aren't converting, your brand is leaving money on the table.
+
+DM me "BRAND" and I'll audit your current design for FREE 🎯
+
+#CaseStudy #GraphicDesign #BrandDesign #DigitalMarketing`
+},
+{
+    type: 'Authority — AI + Design',
+    content: `🤖 AI is changing graphic design — but here's what it CAN'T replace:
+
+I use AI tools daily in my workflow. They're powerful.
+
+But here's what "AI will replace designers" posts always miss:
+
+AI can generate visuals.
+AI CANNOT understand your brand story.
+AI CANNOT feel what your customer feels.
+AI CANNOT build emotional connection.
+
+The designers winning in 2025 use AI as a tool — not compete with it.
+
+At Apple Graphic Studio, we combine:
+→ AI-accelerated production (faster delivery)
+→ Human strategic creativity (better results)
+
+Want to see what that looks like for your business?
+
+Comment "AI" below and I'll send you 3 examples 🚀
+
+#AIDesign #GraphicDesign #Branding #MarketingStrategy`
+},
+{
+    type: 'Direct Offer — Video Editing',
+    content: `🎬 Your Reels are getting ignored. Here's exactly why:
+
+I've edited 500+ videos. The difference between viral and invisible:
+
+1️⃣ First 3 seconds — no hook = they scroll
+2️⃣ Pacing — too slow they leave, too fast they're confused
+3️⃣ Text on screen — 85% of videos watched WITHOUT sound
+
+Most business owners spend hours filming great content... then kill it with bad editing.
+
+We offer:
+📱 Instagram Reels & TikTok editing
+🎯 YouTube long-form & Shorts
+💼 Corporate explainer videos
+📢 Ad creatives (Meta, Google, YouTube)
+
+Turnaround: 24-48 hours
+Starting from: $49/video
+
+DM me "VIDEO" and let's chat 🎬
+
+#VideoEditing #ContentCreation #SocialMedia #DigitalMarketing`
+},
+{
+    type: 'Engagement — Poll Post',
+    content: `Quick question for business owners 👇
+
+When it comes to your brand visuals, what's your BIGGEST challenge?
+
+A) I don't know what good design looks like
+B) Good designers are too expensive
+C) I can't communicate my vision clearly
+D) I've been burned by bad designers before
+
+Drop your answer in the comments.
+(I personally reply to every single one with specific advice)
+
+P.S. — If you voted B, I have a surprise for you in my next post 👀
+
+#Business #Branding #SmallBusiness #Entrepreneur`
+}
+];
+
+function renderTemplates() {
+    document.getElementById('templatesGrid').innerHTML = POST_TEMPLATES.map((t, i) => `
+        <div class="template-card" onclick="openTemplate(${i})">
+            <div class="template-type">${t.type}</div>
+            <div class="template-preview">${t.content.substring(0, 120)}...</div>
+        </div>`).join('');
+}
+
+function openTemplate(idx) {
+    document.getElementById('templateModalTitle').textContent = POST_TEMPLATES[idx].type;
+    document.getElementById('templateModalContent').value = POST_TEMPLATES[idx].content;
+    document.getElementById('templateModal').classList.add('active');
+}
+
+function copyTemplate() {
+    navigator.clipboard.writeText(document.getElementById('templateModalContent').value)
+        .then(() => showToast('Template copied!', 'success'));
+}
+
+function copyAllTemplates() {
+    const all = POST_TEMPLATES.map(t => `--- ${t.type} ---\n${t.content}`).join('\n\n');
+    navigator.clipboard.writeText(all).then(() => showToast('All 5 templates copied!', 'success'));
+}
+
+// ═══════════════════════════════════════════
+// MESSAGE TEMPLATES
+// ═══════════════════════════════════════════
+const MSG_TEMPLATES = [
+{
+    category: 'E-Commerce',
+    label: 'E-Commerce Owner',
+    message: `Hi [First Name],
+
+I noticed you're running an e-commerce brand — your product lineup looks impressive!
+
+I help e-commerce businesses create scroll-stopping product visuals, ad creatives, and social content that actually convert.
+
+Would love to connect and share some ideas that have worked for similar brands 🚀
+
+Best,
+[Your Name] | Apple Graphic Studio
+applegraphicstudio.com`
+},
+{
+    category: 'Marketing Agency',
+    label: 'Marketing Agency',
+    message: `Hi [First Name],
+
+Great to come across your agency's work — the campaigns you've shared are really compelling.
+
+We work as a white-label design partner for several agencies — handling all graphic/video production so your team can focus on strategy.
+
+Fast turnaround, agency pricing, no drama. Would love to explore if there's a fit.
+
+Open to a quick 15-min call this week?
+
+[Your Name] | Apple Graphic Studio`
+},
+{
+    category: 'YouTuber',
+    label: 'YouTuber / Creator',
+    message: `Hey [First Name]!
+
+Been following your channel — your content quality is great!
+
+I help YouTubers with thumbnails, channel art, and video editing that boosts CTR. One of our creators went from 4% to 11% CTR just by upgrading their thumbnails.
+
+Would you be open to a free thumbnail audit? No strings attached.
+
+[Your Name] | Apple Graphic Studio`
+},
+{
+    category: 'Real Estate',
+    label: 'Real Estate',
+    message: `Hi [First Name],
+
+I work with real estate professionals to create property videos, listing graphics, and personal brand content that attracts more listings.
+
+Agents who invest in premium visuals close 23% more deals on average.
+
+I'd love to show you some examples we've created for other agents. Worth a quick look?
+
+[Your Name] | Apple Graphic Studio`
+}
+];
+
+function renderMessageTemplates() {
+    document.getElementById('messageTemplates').innerHTML = MSG_TEMPLATES.map((t, i) => `
+        <div class="table-container" style="margin-bottom:16px;">
+            <div class="table-header">
+                <span class="table-title">
+                    <span class="cat-badge" style="margin-right:8px">${t.label}</span>
+                    Connection Request Message
+                </span>
+                <button class="btn btn-outline btn-sm" onclick="copyMsg(${i})">Copy Message</button>
+            </div>
+            <div style="padding:20px;font-size:14px;line-height:1.8;white-space:pre-line;color:var(--text)">${t.message}</div>
+        </div>`).join('');
+}
+
+function copyMsg(idx) {
+    navigator.clipboard.writeText(MSG_TEMPLATES[idx].message)
+        .then(() => showToast('Message copied! Paste into LinkedIn.', 'success'));
+}
+
+function copyMessage(leadIdx) {
+    const lead = filteredLeads[leadIdx];
+    const cat  = lead['Category'] || lead.category || '';
+    const tmpl = MSG_TEMPLATES.find(t => cat.includes(t.category)) || MSG_TEMPLATES[0];
+    const firstName = (lead['Name'] || lead.name || 'there').split(' ')[0];
+    const msg = tmpl.message.replace('[First Name]', firstName);
+    navigator.clipboard.writeText(msg).then(() =>
+        showToast('Personalized message copied for ' + firstName + '!', 'success'));
+}
+
+// ═══════════════════════════════════════════
+// EXPORT CSV
+// ═══════════════════════════════════════════
+function exportCSV() {
+    if (!allLeads.length) { showToast('No leads to export', 'warning'); return; }
+    const cols = ['Name','Profile URL','Company','Position','Category','Status','Date Added','Message Sent','Reply Received','Notes'];
+    const csv  = [cols.join(','), ...allLeads.map(l =>
+        cols.map(c => '"' + (l[c] || '').toString().replace(/"/g, '""') + '"').join(',')
+    )].join('\n');
+    const a = Object.assign(document.createElement('a'), {
+        href: URL.createObjectURL(new Blob([csv], { type: 'text/csv' })),
+        download: 'ags-leads-' + new Date().toISOString().slice(0,10) + '.csv'
+    });
+    a.click(); URL.revokeObjectURL(a.href);
+    showToast('CSV exported!', 'success');
+}
+
+// ═══════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════
+function toggleSettings() { document.getElementById('settingsPanel').classList.toggle('active'); }
+function saveSettings() {
+    CONFIG.n8nUrl = document.getElementById('n8nUrl').value.trim().replace(/\/$/, '');
+    localStorage.setItem('n8nUrl', CONFIG.n8nUrl);
+    showToast('Settings saved!', 'success');
+    toggleSettings(); loadLeads();
+}
+
+// ═══════════════════════════════════════════
+// TABS & UTILITIES
+// ═══════════════════════════════════════════
+function switchTab(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+function showToast(msg, type = '') {
+    const t = Object.assign(document.createElement('div'), { className: 'toast ' + type, textContent: msg });
+    document.getElementById('toastContainer').appendChild(t);
+    setTimeout(() => t.remove(), 4000);
+}
+
+function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+document.querySelectorAll('.modal-overlay').forEach(o =>
+    o.addEventListener('click', e => { if (e.target === o) o.classList.remove('active'); })
+);
+</script>
+</body>
+</html>
